@@ -25,12 +25,43 @@ class HomeViewController: UIViewController {
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
         
-        homeFeedTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
+        let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
+        homeFeedTable.tableHeaderView = headerView
+        
+        configureNavbar()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         homeFeedTable.frame = view.bounds
+    }
+    
+    
+    private func configureNavbar() {
+        
+        var image = UIImage(named: "NetflixLogoInitial")
+        image = image?.withRenderingMode(.alwaysOriginal)
+        
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageView.image = image
+        
+        let imageContainer = UIControl(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageContainer.addTarget(self, action: #selector(leftBarButtonPressed), for: .touchUpInside)
+        imageContainer.addSubview(imageView)
+        
+        let leftBarButtonItem = UIBarButtonItem(customView: imageContainer)
+        leftBarButtonItem.width = 20
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+        
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "person"), style: .done, target: self, action: nil),
+            UIBarButtonItem(image: UIImage(systemName: "play.rectacle"), style: .done, target: self, action: nil)
+        ]
+    }
+    
+    @objc private func leftBarButtonPressed() {
+        
+        print("Pressed left bar button item")
     }
 }
 
@@ -52,7 +83,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 //        var contentConfig = cell.defaultContentConfiguration()
 //        contentConfig.text = "Text"
 //        contentConfig.secondaryText = "Secondary Text"
-        
+//
 //        cell.contentConfiguration = contentConfig
         
         return cell

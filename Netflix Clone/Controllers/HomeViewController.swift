@@ -9,9 +9,17 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    let sectionTitles: [String] = [
+        "Trending Movies",
+        "Popular",
+        "Trending TV",
+        "Upcoming Movies",
+        "Top Rated"
+    ]
+    
     private let homeFeedTable: UITableView = {
         
-        let table = UITableView()
+        let table = UITableView(frame: CGRect.zero, style: .grouped)
         table.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.identifier)
         return table
     }()
@@ -70,9 +78,8 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 20
+        return sectionTitles.count
     }
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -80,15 +87,15 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier) as? CollectionViewTableViewCell  else { return UITableViewCell()}
-        
-//        var contentConfig = cell.defaultContentConfiguration()
-//        contentConfig.text = "Text"
-//        contentConfig.secondaryText = "Secondary Text"
-//
-//        cell.contentConfiguration = contentConfig
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier) as? CollectionViewTableViewCell  else {
+            return UITableViewCell()
+        }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -99,15 +106,40 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else {
+            print("Failed get header")
+            return
+        }
+
+        var contentConfig = header.defaultContentConfiguration()
+        contentConfig.directionalLayoutMargins = .init(top: 0, leading: 20, bottom: 0, trailing: 0)
+        contentConfig.textProperties.font = .systemFont(ofSize: 18, weight: .semibold)
+        contentConfig.textProperties.color = .label
+        contentConfig.textProperties.transform = .capitalized
+        contentConfig.text = sectionTitles[section]
+
+        header.contentConfiguration = contentConfig
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
+    }
+    
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//
+//        let label = UILabel()
+//        label.sizeToFit()
+//        label.font = .systemFont(ofSize: 18, weight: .bold)
+//        label.text = sectionTitles[section]
+//        return label
+//    }
+//
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let defaultOffset = view.safeAreaInsets.top
         let offset = scrollView.contentOffset.y + defaultOffset
         
-        print("Offset: \(offset), contentOffset.y: \(scrollView.contentOffset.y)")
+//        print("Offset: \(offset), contentOffset.y: \(scrollView.contentOffset.y)")
         
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }

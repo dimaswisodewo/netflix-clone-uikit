@@ -8,12 +8,13 @@
 import Foundation
 
 struct Constants {
-    static let API_KEY = "a6d711b26775a0f8071fec618c79"
+    static let API_KEY = "a6d711b26775a0f8071fec618c79bd64"
+    static let accessTokenAuth = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNmQ3MTFiMjY3NzVhMGY4MDcxZmVjNjE4Yzc5YmQ2NCIsInN1YiI6IjYzY2RmZDU1N2FlY2M2MDA4YWYxMTY5NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ZRlSlVqALZ51Jx34QHregMyEBq4Vm8WhFGnlFPcWSLo"
     static let baseURL = "https://api.themoviedb.org"
     
     static let headers = [
       "accept": "application/json",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNmQ3MTFiMjY3NzVhMGY4MDcxZmVjNjE4Yzc5YmQ2NCIsInN1YiI6IjYzY2RmZDU1N2FlY2M2MDA4YWYxMTY5NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ZRlSlVqALZ51Jx34QHregMyEBq4Vm8WhFGnlFPcWSLo"
+      "Authorization": "Bearer \(accessTokenAuth)"
     ]
 }
 
@@ -69,6 +70,53 @@ class APICaller {
             }
         }
 
+        task.resume()
+    }
+    
+    func getUpcomingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
+        
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/upcoming?language=en-US&page=1") else { return }
+        
+        let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = Constants.headers
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+            guard let data = data, error == nil else { return }
+            
+            do {
+                let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                print(result)
+//                let result = try JSONDecoder().decode(TrendingMoviesResponse.self, from: data)
+//                completion(.success(result.results))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func getUpcomingTvs(completion: @escaping (Result<[Tv], Error>) -> Void) {
+        
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/upcoming?language=en-US&page=1") else { return }
+        
+        let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = Constants.headers
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+            
+            guard let data = data, error == nil else { return }
+            
+            do {
+                let result = try JSONDecoder().decode(TrendingTvsResponse.self, from: data)
+                completion(.success(result.results))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
         task.resume()
     }
 }

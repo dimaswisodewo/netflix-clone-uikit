@@ -40,6 +40,8 @@ class HomeViewController: UIViewController {
         
 //        getTrendingMovies()
 //        getTrendingTvs()
+//        getUpcomingMovies()
+        getUpcomingTvs()
     }
     
     override func viewDidLayoutSubviews() {
@@ -58,10 +60,34 @@ class HomeViewController: UIViewController {
             }
         }
     }
+      
+    private func getUpcomingMovies() {
+        
+        APICaller.shared.getUpcomingMovies { results in
+            switch results {
+                case .success(let movies):
+                    print(movies)
+                case .failure(let error):
+                    print(error)
+            }
+        }
+    }
     
     private func getTrendingTvs() {
         
         APICaller.shared.getTrendingTvs { results in
+            switch results {
+                case .success(let data):
+                    print(data)
+                case .failure(let error):
+                    print(error)
+            }
+        }
+    }
+    
+    private func getUpcomingTvs() {
+        
+        APICaller.shared.getUpcomingTvs { results in
             switch results {
                 case .success(let data):
                     print(data)

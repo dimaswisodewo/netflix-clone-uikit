@@ -18,6 +18,8 @@ class TitleCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    private var isImageLoaded: Bool = false
+    
     override init(frame: CGRect) { 
         super.init(frame: frame)
         contentView.addSubview(posterImageView)
@@ -32,8 +34,11 @@ class TitleCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(with model: String) {
-        guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else { return }
+        
+        guard !isImageLoaded, let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else { return }
         print("Configure image: \(url)")
-        posterImageView.sd_setImage(with: url)
+        posterImageView.sd_setImage(with: url) { [weak self] _, _, _, _ in
+            self?.isImageLoaded = true
+        }
     }
 }

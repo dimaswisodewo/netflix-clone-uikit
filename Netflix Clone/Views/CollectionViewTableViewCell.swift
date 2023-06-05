@@ -43,7 +43,6 @@ class CollectionViewTableViewCell: UITableViewCell {
     
     public func configure(with titles: [Title]) {
         self.titles = titles 
-        print("Titles count: \(titles.count)")
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()
         }
@@ -59,7 +58,6 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         }
         
         if titles.isEmpty {
-            print("Titles is empty")
             return cell
         }
         
@@ -70,6 +68,6 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return titles.count > 7 ? 7 : titles.count
     }
 }

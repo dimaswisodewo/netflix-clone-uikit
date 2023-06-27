@@ -41,7 +41,7 @@ class APICaller {
 //                let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
 //                print(result)
                 
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))
@@ -63,7 +63,7 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))
@@ -85,7 +85,7 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))
@@ -108,7 +108,7 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))
@@ -130,7 +130,7 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))
@@ -151,7 +151,28 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let result = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
+                completion(.success(result.results))
+            } catch {
+                completion(.failure(APIError.failedToGetData))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func getDiscoverMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/discover/movie?language=en-US&page=1") else { return }
+        
+        let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = Constants.headers
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+            guard let data = data, error == nil else { return }
+            
+            do {
+                let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
                 completion(.failure(APIError.failedToGetData))

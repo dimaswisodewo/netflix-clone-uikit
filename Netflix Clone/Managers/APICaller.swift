@@ -181,4 +181,29 @@ class APICaller {
         
         task.resume()
     }
+    
+    func getSearchCollection(query: String, completion: @escaping (Result<[SearchResult], Error>) -> Void) {
+        
+        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        guard let url = URL(string: "\(Constants.baseURL)/3/search/collection?query=\(encodedQuery)&include_adult=false&language=en-US&page=1") else { return }
+        
+        let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = Constants.headers
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+            guard let data = data, error == nil else { return }
+            
+            do {
+                let serializedResult = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                print(serializedResult)
+                let result = try JSONDecoder().decode(SearchResponse.self, from: data)
+                completion(.success(result.results))
+            } catch {
+                completion(.failure(APIError.failedToGetData))
+            }
+        }
+        
+        task.resume()
+    }
 }

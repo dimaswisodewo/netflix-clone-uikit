@@ -15,10 +15,9 @@ class TitleCollectionViewCell: UICollectionViewCell {
     private let posterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = .white
         return imageView
     }()
-    
-//    private var isImageLoaded: Bool = false
     
     override init(frame: CGRect) { 
         super.init(frame: frame)
@@ -35,14 +34,14 @@ class TitleCollectionViewCell: UICollectionViewCell {
     
     public func configure(with model: String) {
         
-//        guard !isImageLoaded, let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else { return }
-        guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else { return }
+        guard !model.isEmpty, let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else {
+            posterImageView.image = UIImage(systemName: "exclamationmark.circle")
+            posterImageView.contentMode = .scaleAspectFit
+            return
+        }
         
         print("Configure image: \(url)")
-//        posterImageView.sd_setImage(with: url) { [weak self] _, _, _, _ in
-//            self?.isImageLoaded = true
-//        }
-        
         posterImageView.sd_setImage(with: url)
+        posterImageView.contentMode = .scaleAspectFill
     }
 }

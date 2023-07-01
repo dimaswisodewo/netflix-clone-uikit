@@ -21,3 +21,13 @@ struct Title: Codable {
     let release_date: String?
     let vote_average: Double
 }
+
+struct SearchResponse: Codable {
+    let results: [SearchResult]
+}
+
+struct SearchResult: Codable {
+    let id: Int
+    let original_name: String?
+    let poster_path: String?
+}

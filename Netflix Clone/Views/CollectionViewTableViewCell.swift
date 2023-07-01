@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol CollectionViewTableViewCellDelegate: AnyObject {
+    func collectionViewTableViewCellDidTapCell(_: CollectionViewTableViewCell, model: TitlePreviewViewModel)
+}
+
 class CollectionViewTableViewCell: UITableViewCell {
 
     static let identifier = "CollectionViewTableViewCell"
-        
+
+    weak var delegate: CollectionViewTableViewCellDelegate?
+    
     private var titles: [Title] = [Title]()
     
     private let collectionView: UICollectionView = {
@@ -69,5 +75,24 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return titles.count > 7 ? 7 : titles.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let title = titles[indexPath.row]
+        guard let query = title.original_title else { return }
+        
+        APICaller.shared.getSearchYoutubeVideos(query: query) { [weak self] result in
+            switch result {
+            case .success(let videoId):
+                guard let strongSelf = self else { return }
+                let title = strongSelf.titles[indexPath.row]
+                let model = TitlePreviewViewModel(title: title.original_title ?? "Unknown Title", overview: title.overview ?? "Unknown overview", videoId: videoId)
+                strongSelf.delegate?.collectionViewTableViewCellDidTapCell(strongSelf, model: model)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }

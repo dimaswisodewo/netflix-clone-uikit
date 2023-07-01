@@ -31,7 +31,7 @@ class SearchViewController: UIViewController {
 
         view.backgroundColor = .systemBackground
         
-        title = "Discover"
+        title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController

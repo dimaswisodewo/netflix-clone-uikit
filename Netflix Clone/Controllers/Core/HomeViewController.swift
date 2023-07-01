@@ -43,7 +43,7 @@ class HomeViewController: UIViewController {
         
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
         homeFeedTable.tableHeaderView = headerView
-        
+//
         configureNavbar()
     }
     
@@ -98,6 +98,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.delegate = self
+        
         switch indexPath.section {
         case Sections.TrendingMovies.rawValue:
             APICaller.shared.getTrendingMovies { results in
@@ -151,10 +153,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200
     }
@@ -199,5 +197,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 //        print("Offset: \(offset), contentOffset.y: \(scrollView.contentOffset.y)")
         
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    }
+}
+
+extension HomeViewController: CollectionViewTableViewCellDelegate {
+    
+    func collectionViewTableViewCellDidTapCell(_: CollectionViewTableViewCell, model: TitlePreviewViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            let viewController = TitlePreviewViewController()
+            viewController.configure(model: model)
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 }

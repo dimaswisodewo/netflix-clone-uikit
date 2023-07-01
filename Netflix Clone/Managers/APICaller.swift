@@ -16,6 +16,13 @@ struct Constants {
       "accept": "application/json",
       "Authorization": "Bearer \(accessTokenAuth)"
     ]
+    
+    static let YouTube_API_KEY = "AIzaSyAwlwSEfOH3SUDytvUStTCffZLXorroxZQ"
+    static let Youtube_BaseURL = "https://youtube.googleapis.com/youtube/v3/search"
+//    static let YouTube_Headers = [
+//        "Authorization": "Bearer [YOUR_ACCESS_TOKEN]",
+//        "Accept": "application/json"
+//    ]
 }
 
 enum APIError: Error {
@@ -204,6 +211,25 @@ class APICaller {
             }
         }
         
+        task.resume()
+    }
+    
+    func getSearchYoutubeVideos(query: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let encodedQuery = String(query + " trailer").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        guard let url = URL(string: "\(Constants.Youtube_BaseURL)?q=\(encodedQuery)&key=\(Constants.YouTube_API_KEY)") else { return }
+        
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
+            guard let data = data, error == nil else { return }
+            
+            do {
+                let result = try JSONDecoder().decode(YoutubeResponse.self, from: data)
+                let videoId = result.items[0].id.videoId
+                completion(.success(videoId))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
         task.resume()
     }
 }

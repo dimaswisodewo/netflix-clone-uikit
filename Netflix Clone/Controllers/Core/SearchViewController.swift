@@ -39,6 +39,8 @@ class SearchViewController: UIViewController {
         navigationItem.searchController?.searchResultsUpdater = self // Search everytime the text field updated
 //        navigationItem.searchController?.searchBar.delegate = self // Search on pressed enter
         
+        searchResultViewController.delegate = self
+        
         view.addSubview(discoverTableView)
         discoverTableView.delegate = self
         discoverTableView.dataSource = self
@@ -100,6 +102,17 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+extension SearchViewController: SearchResultViewControllerDelegate {
+    
+    func searchResultViewControllerDidTapItem(_ model: TitlePreviewViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            let vc = TitlePreviewViewController()
+            vc.configure(model: model)
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+}
+
 extension SearchViewController: UISearchResultsUpdating {
 
     // Search everytime the text field updated
@@ -125,7 +138,6 @@ extension SearchViewController: UISearchResultsUpdating {
             }
         }
     }
-
 }
 
 //extension SearchViewController: UISearchBarDelegate {

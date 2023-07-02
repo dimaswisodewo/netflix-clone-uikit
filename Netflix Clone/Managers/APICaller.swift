@@ -19,10 +19,6 @@ struct Constants {
     
     static let YouTube_API_KEY = "AIzaSyAwlwSEfOH3SUDytvUStTCffZLXorroxZQ"
     static let Youtube_BaseURL = "https://youtube.googleapis.com/youtube/v3/search"
-//    static let YouTube_Headers = [
-//        "Authorization": "Bearer [YOUR_ACCESS_TOKEN]",
-//        "Accept": "application/json"
-//    ]
 }
 
 enum APIError: Error {
@@ -44,10 +40,7 @@ class APICaller {
         let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
             guard let data = data, error == nil else { return }
             
-            do {
-//                let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-//                print(result)
-                
+            do {                
                 let result = try JSONDecoder().decode(TitleResponse.self, from: data)
                 completion(.success(result.results))
             } catch {
@@ -202,8 +195,8 @@ class APICaller {
             guard let data = data, error == nil else { return }
             
             do {
-                let serializedResult = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-                print(serializedResult)
+//                let serializedResult = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+//                print(serializedResult)
                 let result = try JSONDecoder().decode(SearchResponse.self, from: data)
                 completion(.success(result.results))
             } catch {

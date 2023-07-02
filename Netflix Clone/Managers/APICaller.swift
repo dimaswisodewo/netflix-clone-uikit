@@ -19,6 +19,8 @@ struct Constants {
     
     static let YouTube_API_KEY = "AIzaSyAwlwSEfOH3SUDytvUStTCffZLXorroxZQ"
     static let Youtube_BaseURL = "https://youtube.googleapis.com/youtube/v3/search"
+    
+    static let Notification_Downloaded = "Downloaded"
 }
 
 enum APIError: Error {

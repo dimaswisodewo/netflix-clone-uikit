@@ -32,6 +32,11 @@ class DownloadsViewController: UIViewController {
         downloadedTable.dataSource = self
         
         fetchDownloadedTitles()
+        
+        // Fetch from database everytime download finished
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(Constants.Notification_Downloaded), object: nil, queue: nil) { [weak self] _ in
+            self?.fetchDownloadedTitles()
+        }
     }
     
     override func viewDidLayoutSubviews() {

@@ -62,6 +62,8 @@ class CollectionViewTableViewCell: UITableViewCell {
             switch result {
             case .success():
                 print("Downloaded \(String(describing: title.original_title))")
+                // Notify everytime download finished
+                NotificationCenter.default.post(name: NSNotification.Name(Constants.Notification_Downloaded), object: nil)
             case .failure(let error):
                 print(error.localizedDescription)
             }

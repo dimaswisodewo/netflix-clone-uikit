@@ -59,7 +59,7 @@ class TitlePreviewViewController: UIViewController {
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.topAnchor.constraint(equalTo: view.topAnchor, constant: safeArea.top),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            webView.heightAnchor.constraint(equalToConstant: 300)
+            webView.heightAnchor.constraint(equalToConstant: 380)
         ]
         
         let titleConstraints = [

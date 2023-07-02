@@ -95,4 +95,18 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
             }
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+                
+        let config = UIContextMenuConfiguration(actionProvider:  { _ in
+            
+            let downloadAction = UIAction(title: "Download") { (action) in
+                print("Download tapped!")
+            }
+            
+            return UIMenu(options: .displayInline, children: [downloadAction])
+        })
+        
+        return config
+    }
 }

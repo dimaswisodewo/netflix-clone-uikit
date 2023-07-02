@@ -40,7 +40,7 @@ class TitleCollectionViewCell: UICollectionViewCell {
             return
         }
         
-        print("Configure image: \(url)")
+//        print("Configure image: \(url)")
         posterImageView.sd_setImage(with: url)
         posterImageView.contentMode = .scaleAspectFill
     }

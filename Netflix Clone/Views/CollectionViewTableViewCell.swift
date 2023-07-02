@@ -53,6 +53,20 @@ class CollectionViewTableViewCell: UITableViewCell {
             self?.collectionView.reloadData()
         }
     }
+    
+    private func downloadTitleAt(indexPath: IndexPath) {
+        
+        let title = titles[indexPath.row]
+        print(String(describing: title))
+        DataPersistenceManager.shared.downloadTitleWith(model: title) { result in
+            switch result {
+            case .success():
+                print("Downloaded \(String(describing: title.original_title))")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }
 
 extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -97,11 +111,14 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-                
+        
         let config = UIContextMenuConfiguration(actionProvider:  { _ in
             
-            let downloadAction = UIAction(title: "Download") { (action) in
-                print("Download tapped!")
+            guard let indexPath = indexPaths.first else {
+                return UIMenu()
+            }
+            let downloadAction = UIAction(title: "Download") { [weak self] _ in
+                self?.downloadTitleAt(indexPath: indexPath)
             }
             
             return UIMenu(options: .displayInline, children: [downloadAction])

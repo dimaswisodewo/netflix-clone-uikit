@@ -12,6 +12,7 @@ class TitlePreviewViewController: UIViewController {
 
     private let webView: WKWebView = {
         let webView = WKWebView()
+        webView.underPageBackgroundColor = .systemBackground
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
@@ -46,6 +47,7 @@ class TitlePreviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationController?.navigationBar.tintColor = .label
         view.backgroundColor = .systemBackground
         
         view.addSubview(webView)

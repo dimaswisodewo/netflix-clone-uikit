@@ -35,8 +35,8 @@ class HeroHeaderUIView: UIView {
         
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .systemBackground
         imageView.clipsToBounds = true
-        imageView.image = UIImage(named: "PosterOppenheimer")
         return imageView
     }()
     
@@ -85,5 +85,23 @@ class HeroHeaderUIView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError()
+    }
+    
+    private func setHeroHeaderContentMode(mode: UIView.ContentMode) {
+        DispatchQueue.main.async { [weak self] in
+            self?.heroImageView.contentMode = mode
+        }
+    }
+    
+    func configure(model: String) {
+        
+        guard !model.isEmpty, let url = URL(string: "https://image.tmdb.org/t/p/w500\(model)") else {
+            heroImageView.image = UIImage(systemName: "exclamationmark.circle")
+            setHeroHeaderContentMode(mode: .scaleAspectFit)
+            return
+        }
+        
+        heroImageView.sd_setImage(with: url)
+        setHeroHeaderContentMode(mode: .scaleAspectFill)
     }
 }

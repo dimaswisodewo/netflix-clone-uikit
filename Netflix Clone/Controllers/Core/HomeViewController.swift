@@ -31,6 +31,10 @@ class HomeViewController: UIViewController {
         table.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.identifier)
         return table
     }()
+    
+    let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: 0, height: 460))
+    
+    private var randomTrendingMovie: Title?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,15 +45,20 @@ class HomeViewController: UIViewController {
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
         
-        let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
+        headerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 460)
         homeFeedTable.tableHeaderView = headerView
-//
+
         configureNavbar()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         homeFeedTable.frame = view.bounds
+    }
+    
+    private func configureHeroHeaderImage(model: Title) {
+        randomTrendingMovie = model
+        headerView.configure(model: model.poster_path ?? "")
     }
     
     private func configureNavbar() {
@@ -102,48 +111,50 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.section {
         case Sections.TrendingMovies.rawValue:
-            APICaller.shared.getTrendingMovies { results in
+            APICaller.shared.getTrendingMovies { [weak self] results in
                 switch results {
-                    case .success(let titles):
-                        cell.configure(with: titles)
-                    case .failure(let error):
-                        print("TrendingMovies Error: \(error)")
+                case .success(let titles):
+                    cell.configure(with: titles)
+                    guard let randomTrendingMovie = titles.randomElement() else { return }
+                    self?.configureHeroHeaderImage(model: randomTrendingMovie)
+                case .failure(let error):
+                    print("TrendingMovies Error: \(error)")
                 }
             }
         case Sections.TrendingTvs.rawValue:
             APICaller.shared.getTrendingTvs { results in
                 switch results {
-                    case .success(let titles):
-                        cell.configure(with: titles)
-                    case .failure(let error):
-                        print("TrendingTvs Error: \(error)")
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print("TrendingTvs Error: \(error)")
                 }
             }
         case Sections.Popular.rawValue:
             APICaller.shared.getPopularMovies { results in
                 switch results {
-                    case .success(let titles):
-                        cell.configure(with: titles)
-                    case .failure(let error):
-                        print("Popular Error: \(error)")
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print("Popular Error: \(error)")
                 }
             }
         case Sections.Upcoming.rawValue:
             APICaller.shared.getUpcomingMovies { results in
                 switch results {
-                    case .success(let titles):
-                        cell.configure(with: titles)
-                    case .failure(let error):
-                        print("Upcoming Error: \(error)")
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print("Upcoming Error: \(error)")
                 }
             }
         case Sections.TopRated.rawValue:
             APICaller.shared.getTopRatedMovies { results in
                 switch results {
-                    case .success(let titles):
-                        cell.configure(with: titles)
-                    case .failure(let error):
-                        print("TopRated Error: \(error)")
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print("TopRated Error: \(error)")
                 }
             }
         default:
